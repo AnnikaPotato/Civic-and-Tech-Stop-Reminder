@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mod id="88c2a753-e51c-409a-bd9e-bd563d6f27aa" version="1">
+  <Properties>
+    <Name>Tech And Civic Stop Reminder</Name>
+    <Description>Remind you to change an ongoing tech/civic which is unboosted and can be finished with a boost from eureka/inspiration</Description>
+    <CustomProperties></CustomProperties>
+    <Created>1692922912</Created>
+    <Teaser>Remind you to change an ongoing tech/civic which is unboosted and can be finished with a boost from eureka/inspiration</Teaser>
+    <Authors>AnnikaPotato</Authors>
+    <AffectsSavedGames>0</AffectsSavedGames>
+    <CompatibleVersions>1.2,2.0</CompatibleVersions>
+  </Properties>
+  <InGameActions>
+    <UpdateText id="AnPo_Reminder_Localization">
+      <File>AnPo_Reminder_Text.sql</File>
+    </UpdateText>
+    <AddUserInterfaces id="CivicNTechReminderLoad">
+      <Properties>
+        <LoadOrder>9123</LoadOrder>
+        <Context>InGame</Context>
+      </Properties>
+      <File>AnPo_ReminderPopUps.xml</File>
+    </AddUserInterfaces>
+  </InGameActions>
+  <Files>
+    <File>AnPo_ReminderPopUps.lua</File>
+    <File>AnPo_ReminderPopUps.xml</File>
+    <File>AnPo_Reminder_Text.sql</File>
+  </Files>
+</Mod>

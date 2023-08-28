@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Context Name="TechNCivicReminder">
+	<Container ID="TechNCivicReminderCTN" Anchor="C,C" Offset="0, 0" Size="parent, parent">
+		<Box ID="ReminderRoot" Color="0,0,0,150" Size="parent,parent" ConsumeMouse="1" Hidden="0" TutorialActive="1">
+			<Grid ID="ReminderOuter" Size="auto,auto" Anchor="C,C" Offset="0,0" Style="DropShadow2"     Color="255,255,255,200" AutoSizePadding="25,25" ConsumeMouse="1">
+				<Grid ID="ReminderBox"     Size="920,auto" Anchor="C,C" Offset="0,0" Style="WindowFrameTitle" AutoSizePadding="0,10">
+					<Container ID="ReminderTitleCTN" Size="parent,38" Offset="0,4">
+						<Label  ID="ReminderTitle" Style="WindowHeader" Anchor="C,C" String="lalala" />
+					</Container>
+					<Stack ID="ReminderBody" Size="parent, auto" Anchor="C,T" Offset="0,50" StackGrowth="Bottom" StackPadding="30">
+						<Label ID="ReminderText" Anchor="C,T" Offset="0, 4" Style="BodyTextDark18" Align="Center" WrapWidth="430" String="HAHAHAHA"/>
+						<Stack ID="ReminderButtonLineButtom" Size="parent, auto" Anchor="C,C" StackGrowth="Right" >
+							<GridButton ID="OpenTree" Anchor="L,C" Size="300,41" Offset="50,0" Style="MainButton" String="Open Tree"/>
+							<GridButton ID="OKButton" Size="220,41" Offset="0,0" Style="ButtonConfirm" String="OK"/>
+							<GridButton ID="MuteButton"  Size="300,41" Offset="0,0" Style="ButtonRed" String="Mute"/>
+						</Stack>
+					</Stack>
+				</Grid>
+			</Grid>
+		</Box>
+	</Container>
+</Context>
+

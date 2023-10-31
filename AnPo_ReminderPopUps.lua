@@ -31,7 +31,7 @@ function IsOwnerRequirementSetMet(modifierObjId:number)
     return true;
 end
 
-function queryExtraBoost(isTech:boolean)
+function queryExtraBoost(isTech:boolean, playerID:number)
     local currentTurn = Game.GetCurrentGameTurn()
     if currentTurn == cachedTurn then
         if isTech then

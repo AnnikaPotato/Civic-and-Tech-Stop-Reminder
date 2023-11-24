@@ -31,7 +31,7 @@ function IsOwnerRequirementSetMet(modifierObjId:number)
     return true;
 end
 
-function queryExtraBoost(isTech:boolean, playerID:number)
+function queryExtraBoost(playerID:number, isTech:boolean)
     local currentTurn = Game.GetCurrentGameTurn()
     if playerID ~= Game.GetLocalPlayer() then return; end
     if currentTurn == cachedTurn then
@@ -61,10 +61,10 @@ function queryExtraBoost(isTech:boolean, playerID:number)
                     if modifierTypeRow.EffectType == 'EFFECT_ADJUST_CIVIC_BOOST' then
                         civic_ratio = civic_ratio + modifierDef.Arguments.Amount;
                     end
-                    print(modifierObjID, modifierType, modifierTypeRow.EffectType)
-                    for k, v in pairs(modifierDef.Arguments) do
-                        print(k, v)
-                    end
+                    -- print(modifierObjID, modifierType, modifierTypeRow.EffectType)
+                    -- for k, v in pairs(modifierDef.Arguments) do
+                    --     print(k, v)
+                    -- end
                 end
             end
         end

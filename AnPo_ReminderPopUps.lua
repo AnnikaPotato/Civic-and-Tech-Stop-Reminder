@@ -31,7 +31,7 @@ function IsOwnerRequirementSetMet(modifierObjId:number)
     return true;
 end
 
-function queryExtraBoost(playerID:number, isTech:boolean)
+function queryExtraBoost(playerID, isTech)
     local currentTurn = Game.GetCurrentGameTurn()
     if playerID ~= Game.GetLocalPlayer() then return; end
     if currentTurn == cachedTurn then
@@ -84,6 +84,11 @@ function checkTech()
 	if (pPlayer == nil) then
 		return false
 	end
+
+    --print(PlayerConfigurations[Game.GetLocalPlayer()]:GetCivilizationTypeName())
+    if (PlayerConfigurations[Game.GetLocalPlayer()]:GetCivilizationTypeName() == "CIVILIZATION_BABYLON_STK") then
+        return
+    end
 
 	local currentTech = pPlayer:GetTechs():GetResearchingTech()
 	if (currentTech < 3) then

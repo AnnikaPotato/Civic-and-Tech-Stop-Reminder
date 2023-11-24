@@ -31,8 +31,9 @@ function IsOwnerRequirementSetMet(modifierObjId:number)
     return true;
 end
 
-function queryExtraBoost(isTech:boolean, playerID:number)
+function queryExtraBoost(playerID, isTech)
     local currentTurn = Game.GetCurrentGameTurn()
+    if playerID ~= Game.GetLocalPlayer() then return; end
     if currentTurn == cachedTurn then
         if isTech then
             return cachedExtraTechBoost
@@ -59,6 +60,10 @@ function queryExtraBoost(isTech:boolean, playerID:number)
                     end
                     if modifierTypeRow.EffectType == 'EFFECT_ADJUST_CIVIC_BOOST' then
                         civic_ratio = civic_ratio + modifierDef.Arguments.Amount;
+                    end
+                    print(modifierObjID, modifierType, modifierTypeRow.EffectType)
+                    for k, v in pairs(modifierDef.Arguments) do
+                        print(k, v)
                     end
                 end
             end
@@ -109,8 +114,8 @@ function checkTech()
 			break
 		end
 	end
-    boostValueTech = boostValueTech + queryExtraBoost(true)
-	if ((progress + math.floor(math.max(cost * boostValueTech / 100. - 1 , 0))) < cost) then
+    boostValueTech = boostValueTech + queryExtraBoost(Game.GetLocalPlayer(), true)
+	if ((progress + math.floor(math.max(cost * boostValueTech / 100 - 0.5, 0))) < cost) then
 		return false
 	end
 
@@ -152,9 +157,8 @@ function checkCivic()
 			break
 		end
 	end
-    boostValueCivic = boostValueCivic + queryExtraBoost(false)
-
-	if ((progress + math.floor(math.max(cost * boostValueCivic / 100. - 1 , 0))) < cost) then
+    boostValueCivic = boostValueCivic + queryExtraBoost(Game.GetLocalPlayer(), false)
+	if ((progress + math.floor(math.max(cost * boostValueCivic / 100. - 0.5 , 0))) < cost) then
 		return false
 	end
     return true

@@ -11,9 +11,18 @@
     <CompatibleVersions>1.2,2.0</CompatibleVersions>
   </Properties>
   <InGameActions>
+  
+    <ImportFiles id="UserSettings">
+      <Properties>
+        <LoadOrder>500</LoadOrder>
+      </Properties>
+      <File>AnPo_User_Settings.lua</File>
+    </ImportFiles>
+
     <UpdateText id="AnPo_Reminder_Localization">
       <File>AnPo_Reminder_Text.sql</File>
     </UpdateText>
+
     <AddUserInterfaces id="CivicNTechReminderLoad">
       <Properties>
         <LoadOrder>9123</LoadOrder>
@@ -21,10 +30,45 @@
       </Properties>
       <File>AnPo_ReminderPopUps.xml</File>
     </AddUserInterfaces>
+
+    <ImportFiles id="AnPo_techOff">
+      <Properties>
+        <LoadOrder>400</LoadOrder>
+      </Properties>
+      <File>AnPo_techGreyArtboard.dds</File>
+    </ImportFiles>
+
+    <ImportFiles id="AnPo_techOn">
+      <Properties>
+        <LoadOrder>401</LoadOrder>
+      </Properties>
+      <File>AnPo_techLongArtboard.dds</File>
+    </ImportFiles>
+
+    <ImportFiles id="AnPo_civicOn">
+      <Properties>
+        <LoadOrder>402</LoadOrder>
+      </Properties>
+      <File>AnPo_civicLongArtboard.dds</File>
+    </ImportFiles>
+
+    <ImportFiles id="AnPo_civicOff">
+      <Properties>
+        <LoadOrder>403</LoadOrder>
+      </Properties>
+      <File>AnPo_civicGreyArtboard.dds</File>
+    </ImportFiles>
+
+
   </InGameActions>
   <Files>
+    <File>AnPo_User_Settings.lua</File>
     <File>AnPo_ReminderPopUps.lua</File>
     <File>AnPo_ReminderPopUps.xml</File>
     <File>AnPo_Reminder_Text.sql</File>
+    <File>AnPo_techGreyArtboard.dds</File>
+    <File>AnPo_techLongArtboard.dds</File>
+    <File>AnPo_civicLongArtboard.dds</File>
+    <File>AnPo_civicGreyArtboard.dds</File>
   </Files>
 </Mod>

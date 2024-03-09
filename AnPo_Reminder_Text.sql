@@ -13,6 +13,10 @@ VALUES
 		("LOC_ANPO_CIVIC_OPEN_TREE",  			"en_US",	"Open Civic Tree"),
         ("LOC_ANPO_IGNORE",  		            "en_US",	"Ignore This Turn"),
         ("LOC_ANPO_MUTE",  		                "en_US",	"Mute Until Researching Others"),
+		("LOC_ANPO_TECH_BUTTON_TT",				"en_US",	"Tech Stop Reminder      [NEWLINE][NEWLINE]Current status:  {1_status}"),
+		("LOC_ANPO_CIVIC_BUTTON_TT",			"en_US",	"Civic Stop Reminder     [NEWLINE][NEWLINE]Current status:  {1_status}"),
+		("LOC_ANPO_ON",							"en_US",	"ON"),
+		("LOC_ANPO_OFF",						"en_US",	"OFF"),
 --------------------------------------------------------------------------------------------------------------------------
 
 -- Chinese ------------------------------------------------------------------------------------------------------------
@@ -23,5 +27,9 @@ VALUES
         ("LOC_ANPO_CIVIC_DESC",  		        "zh_Hans_CN",	"您正在研究的市政可由鼓舞完成。[NEWLINE][NEWLINE]是否要更换？"),
         ("LOC_ANPO_CIVIC_OPEN_TREE",  		    "zh_Hans_CN",	"打开市政树"),
         ("LOC_ANPO_IGNORE",  		            "zh_Hans_CN",	"知道了"),
-        ("LOC_ANPO_MUTE",  		                "zh_Hans_CN",	"更换研究内容前不再提示");
+        ("LOC_ANPO_MUTE",  		                "zh_Hans_CN",	"更换研究内容前不再提示"),
+		("LOC_ANPO_TECH_BUTTON_TT",				"zh_Hans_CN",	"更换科技提醒      [NEWLINE][NEWLINE]目前状态:  {1_status}"),
+		("LOC_ANPO_CIVIC_BUTTON_TT",			"zh_Hans_CN",	"更换文化提醒      [NEWLINE][NEWLINE]目前状态:  {1_status}"),
+		("LOC_ANPO_ON",							"zh_Hans_CN",	"开"),
+		("LOC_ANPO_OFF",						"zh_Hans_CN",	"关");
 --------------------------------------------------------------------------------------------------------------------------

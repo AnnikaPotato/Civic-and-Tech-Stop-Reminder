@@ -1,14 +1,25 @@
-include("InstanceManager");
+include( "InstanceManager" );
+include( "AnPo_User_Settings" );
 
+local TECH_ACTIVE_KEY = "AnPo_TECH_ACTIVE_STATUS"
+local CIVIC_ACTIVE_KEY = "AnPo_CIVIC_ACTIVE_STATUS"
+
+local IsButtonAdded = false
+
+local techStop = nil;
 local techRemind = true
 local previousTech = nil
 
+local civicStop = nil;
 local civicRemind = true
 local previousCivic = nil
 
+local currentTurn = -1
 local cachedTurn = -1
 local cachedExtraTechBoost = 0
 local cachedExtraCivicBoost = 0
+
+local civilizationName = nil
 
 local techRemindTitle       :string = Locale.Lookup("LOC_ANPO_TECH_TITLE")
 local techRemindDesc        :string = Locale.Lookup("LOC_ANPO_TECH_DESC")
@@ -20,7 +31,7 @@ local remindIgnore          :string = Locale.Lookup("LOC_ANPO_IGNORE")
 local remindMute            :string = Locale.Lookup("LOC_ANPO_MUTE")
 
 -- Check if the modifier's owner requirement set is met.
-function IsOwnerRequirementSetMet(modifierObjId:number)
+local function IsOwnerRequirementSetMet(modifierObjId:number)
     -- Check if owner requirements are met.
     if modifierObjId ~= nil and modifierObjId ~= 0 then
         local ownerRequirementSetId = GameEffects.GetModifierOwnerRequirementSet(modifierObjId);
@@ -31,8 +42,8 @@ function IsOwnerRequirementSetMet(modifierObjId:number)
     return true;
 end
 
-function queryExtraBoost(playerID, isTech)
-    local currentTurn = Game.GetCurrentGameTurn()
+local function queryExtraBoost(playerID, isTech)
+    
     if playerID ~= Game.GetLocalPlayer() then return; end
     if currentTurn == cachedTurn then
         if isTech then
@@ -79,38 +90,33 @@ function queryExtraBoost(playerID, isTech)
     end
 end
 
-function checkTech()
-    local pPlayer = Players[Game.GetLocalPlayer()]
+local function checkTech()
+    local pPlayer = Players[Game.GetLocalPlayer()];
 	if (pPlayer == nil) then
-		return false
+		return false;
 	end
 
-    --print(PlayerConfigurations[Game.GetLocalPlayer()]:GetCivilizationTypeName())
-    if (PlayerConfigurations[Game.GetLocalPlayer()]:GetCivilizationTypeName() == "CIVILIZATION_BABYLON_STK") then
-        return
-    end
-
-	local currentTech = pPlayer:GetTechs():GetResearchingTech()
+	local currentTech = pPlayer:GetTechs():GetResearchingTech();
 	if (currentTech < 3) then
-		return false
+		return false;
 	end
 
 	if (pPlayer:GetTechs():HasBoostBeenTriggered(pPlayer:GetTechs():GetResearchingTech())) then
-		return false
+		return false;
 	end
 
 	if (previousTech ~= nil and previousTech == currentTech and techRemind == false) then
-		return false
+		return false;
 	end
 
-	previousTech = currentTech
-	techRemind = true
-	local cost = pPlayer:GetTechs():GetResearchCost(pPlayer:GetTechs():GetResearchingTech())
-	local progress = pPlayer:GetTechs():GetResearchProgress(pPlayer:GetTechs():GetResearchingTech())
-    local boostValueTech = 0
+	previousTech = currentTech;
+	techRemind = true;
+	local cost = pPlayer:GetTechs():GetResearchCost(pPlayer:GetTechs():GetResearchingTech());
+	local progress = pPlayer:GetTechs():GetResearchProgress(pPlayer:GetTechs():GetResearchingTech());
+    local boostValueTech = 0;
 
     if (progress >= cost) then
-        return false
+        return false;
     end
 
 	for row in GameInfo.Boosts() do
@@ -119,41 +125,41 @@ function checkTech()
 			break
 		end
 	end
-    boostValueTech = boostValueTech + queryExtraBoost(Game.GetLocalPlayer(), true)
+    boostValueTech = boostValueTech + queryExtraBoost(Game.GetLocalPlayer(), true);
 	if ((progress + math.floor(math.max(cost * boostValueTech / 100 - 0.5, 0))) < cost) then
-		return false
+		return false;
 	end
 
-    return true
+    return true;
 end
 
-function checkCivic()
-    local pPlayer = Players[Game.GetLocalPlayer()]
+local function checkCivic()
+    local pPlayer = Players[Game.GetLocalPlayer()];
 	if (pPlayer == nil) then
-		return false
+		return false;
 	end
 
-	local currentCivic = pPlayer:GetCulture():GetProgressingCivic()
+	local currentCivic = pPlayer:GetCulture():GetProgressingCivic();
 	if (currentCivic < 1) then
-		return false
+		return false;
 	end
 
 	if (pPlayer:GetCulture():HasBoostBeenTriggered(pPlayer:GetCulture():GetProgressingCivic())) then
-		return false
+		return false;
 	end
 
 	if (previousCivic ~= nil and previousCivic == currentCivic and civicRemind == false) then
-		return false
+		return false;
 	end
 
-	previousCivic = currentCivic
-	civicRemind = true
-    local cost = pPlayer:GetCulture():GetCultureCost(pPlayer:GetCulture():GetProgressingCivic())
-	local progress = pPlayer:GetCulture():GetCulturalProgress(pPlayer:GetCulture():GetProgressingCivic())
-    local boostValueCivic = 0
+	previousCivic = currentCivic;
+	civicRemind = true;
+    local cost = pPlayer:GetCulture():GetCultureCost(pPlayer:GetCulture():GetProgressingCivic());
+	local progress = pPlayer:GetCulture():GetCulturalProgress(pPlayer:GetCulture():GetProgressingCivic());
+    local boostValueCivic = 0;
 
     if (progress >= cost) then
-        return false
+        return false;
     end
 
 	for row in GameInfo.Boosts() do
@@ -162,117 +168,244 @@ function checkCivic()
 			break
 		end
 	end
-    boostValueCivic = boostValueCivic + queryExtraBoost(Game.GetLocalPlayer(), false)
+    boostValueCivic = boostValueCivic + queryExtraBoost(Game.GetLocalPlayer(), false);
 	if ((progress + math.floor(math.max(cost * boostValueCivic / 100. - 0.5 , 0))) < cost) then
-		return false
+		return false;
 	end
-    return true
+    return true;
 end
 
-function OnShowTechReminder()
-    Controls.ReminderTitle:SetText(techRemindTitle)
-    Controls.ReminderText:SetText(techRemindDesc)
+local function OnShowTechReminder()
+    Controls.ReminderTitle:SetText(techRemindTitle);
+    Controls.ReminderText:SetText(techRemindDesc);
 
-    Controls.OpenTree:SetText(techRemindTree)
+    Controls.OpenTree:SetText(techRemindTree);
     Controls.OpenTree:RegisterCallback(Mouse.eLClick, function()
         LuaEvents.ResearchChooser_RaiseTechTree()
         Controls.TechNCivicReminderCTN:SetHide(true)
-    end)
+    end);
 
-    Controls.OKButton:SetText(remindIgnore)
+    Controls.OKButton:SetText(remindIgnore);
     Controls.OKButton:RegisterCallback(Mouse.eLClick, function()
         Controls.TechNCivicReminderCTN:SetHide(true)
-    end)
+    end);
 
-    Controls.MuteButton:SetText(remindMute)
+    Controls.MuteButton:SetText(remindMute);
     Controls.MuteButton:RegisterCallback(Mouse.eLClick, function()
         techRemind = false
         Controls.TechNCivicReminderCTN:SetHide(true)
-    end)
-    Controls.TechNCivicReminderCTN:SetHide(false)
+    end);
+    Controls.TechNCivicReminderCTN:SetHide(false);
 end
 
-function OnShowCivicReminder()
-    Controls.ReminderTitle:SetText(civicRemindTitle)
-    Controls.ReminderText:SetText(civicRemindDesc)
+local function OnShowCivicReminder()
+    Controls.ReminderTitle:SetText(civicRemindTitle);
+    Controls.ReminderText:SetText(civicRemindDesc);
 
-    Controls.OpenTree:SetText(civicRemindTree)
+    Controls.OpenTree:SetText(civicRemindTree);
     Controls.OpenTree:RegisterCallback(Mouse.eLClick, function()
         LuaEvents.CivicsChooser_RaiseCivicsTree()
         Controls.TechNCivicReminderCTN:SetHide(true)
-    end)
+    end);
 
-    Controls.OKButton:SetText(remindIgnore)
+    Controls.OKButton:SetText(remindIgnore);
     Controls.OKButton:RegisterCallback(Mouse.eLClick, function()
         Controls.TechNCivicReminderCTN:SetHide(true)
-    end)
+    end);
 
-    Controls.MuteButton:SetText(remindMute)
+    Controls.MuteButton:SetText(remindMute);
     Controls.MuteButton:RegisterCallback(Mouse.eLClick, function()
         civicRemind = false
         Controls.TechNCivicReminderCTN:SetHide(true)
-    end)
-    Controls.TechNCivicReminderCTN:SetHide(false)
+    end);
+    Controls.TechNCivicReminderCTN:SetHide(false);
 end
 
-function OnShowBothReminders()
-    Controls.ReminderTitle:SetText(techRemindTitle)
-    Controls.ReminderText:SetText(techRemindDesc)
+local function OnShowBothReminders()
+    Controls.ReminderTitle:SetText(techRemindTitle);
+    Controls.ReminderText:SetText(techRemindDesc);
 
-    Controls.OpenTree:SetText(techRemindTree)
+    Controls.OpenTree:SetText(techRemindTree);
     Controls.OpenTree:RegisterCallback(Mouse.eLClick, function()
         LuaEvents.ResearchChooser_RaiseTechTree()
         Controls.TechNCivicReminderCTN:SetHide(true)
         OnShowCivicReminder()
-    end)
+    end);
 
-    Controls.OKButton:SetText(remindIgnore)
+    Controls.OKButton:SetText(remindIgnore);
     Controls.OKButton:RegisterCallback(Mouse.eLClick, function()
         Controls.TechNCivicReminderCTN:SetHide(true)
         OnShowCivicReminder()
-    end)
+    end);
 
-    Controls.MuteButton:SetText(remindMute)
+    Controls.MuteButton:SetText(remindMute);
     Controls.MuteButton:RegisterCallback(Mouse.eLClick, function()
         techRemind = false
         Controls.TechNCivicReminderCTN:SetHide(true)
         OnShowCivicReminder()
-    end)
-    Controls.TechNCivicReminderCTN:SetHide(false)
+    end);
+    Controls.TechNCivicReminderCTN:SetHide(false);
 end
 
-function OnEnterGame()
-    Controls.TechNCivicReminderCTN:SetHide(true)
-    Controls.TechNCivicReminderCTN:ChangeParent(ContextPtr:LookUpControl("/InGame/WorldViewControls"))
+
+local function changeTechTexture()
+    if (techStop) then
+        Controls.AnPoTechButton:SetTexture("AnPo_techGreyArtboard.dds")
+    else
+        Controls.AnPoTechButton:SetTexture("AnPo_techLongArtboard.dds")
+    end
+
+end
+
+local function changeCivicTexture()
+    if (civicStop) then
+        Controls.AnPoCivicButton:SetTexture("AnPo_civicGreyArtboard.dds")
+    else
+        Controls.AnPoCivicButton:SetTexture("AnPo_civicLongArtboard.dds")
+    end
+
+end
+
+local function changeTooltip(isCivic)
+    local status: string;
+
+    if (isCivic) then
+        if (not civicStop) then
+            status = "LOC_ANPO_ON"
+        else
+            status = "LOC_ANPO_OFF"
+        end
+        Controls.AnPoCivicButton:SetToolTipString(Locale.Lookup("LOC_ANPO_CIVIC_BUTTON_TT", Locale.Lookup(status)));
+    else
+        if (not techStop) then
+            status = "LOC_ANPO_ON"
+        else
+            status = "LOC_ANPO_OFF"
+        end
+        Controls.AnPoTechButton:SetToolTipString(Locale.Lookup("LOC_ANPO_TECH_BUTTON_TT", Locale.Lookup(status)));
+    end
+end
+
+local function onClickTech()
+
+    techStop = not techStop;
+    local playerConfig = PlayerConfigurations[Game.GetLocalPlayer()];
+    if playerConfig then
+        playerConfig:SetValue(TECH_ACTIVE_KEY, techStop);
+    end
+
+    changeTooltip(false);
+    changeTechTexture();
+end
+
+local function onClickCivic()
+
+    civicStop = not civicStop;
+    local playerConfig = PlayerConfigurations[Game.GetLocalPlayer()];
+    if playerConfig then
+        playerConfig:SetValue(CIVIC_ACTIVE_KEY, civicStop);
+    end
+
+    changeTooltip(true);
+    changeCivicTexture();
+end
+
+
+
+local function OnEnterGame()
+    local playerConfig = PlayerConfigurations[Game.GetLocalPlayer()];
+    local techConfigs;
+    local civicConfigs;
+    if playerConfig then
+        techConfigs = playerConfig:GetValue(TECH_ACTIVE_KEY);
+        civicConfigs = playerConfig:GetValue(CIVIC_ACTIVE_KEY);
+    end
+
+    if techConfigs then
+        techStop = techConfigs;
+    else
+        techStop = user_techStop;
+    end
+
+    if civicConfigs then
+        civicStop = civicConfigs;
+    else
+        civicStop = user_civicStop;
+    end
+    
+
+    Controls.TechNCivicReminderCTN:SetHide(true);
+    Controls.TechNCivicReminderCTN:ChangeParent(ContextPtr:LookUpControl("/InGame/WorldViewControls"));
     Controls.OpenTree:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
     Controls.OKButton:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
     Controls.MuteButton:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
+
+    if not IsButtonAdded then
+        local tPanRight = ContextPtr:LookUpControl("/InGame/TopPanel/RightContents");
+		if tPanRight ~= nil then
+			Controls.AnPoTechButton:ChangeParent(tPanRight);
+			tPanRight:AddChildAtIndex(Controls.AnPoTechButton, 3);
+            Controls.AnPoCivicButton:ChangeParent(tPanRight);
+			tPanRight:AddChildAtIndex(Controls.AnPoCivicButton, 3);
+			tPanRight:CalculateSize();
+			tPanRight:ReprocessAnchoring();
+			IsButtonAdded = true;
+		end
+        
+        changeTechTexture()
+        changeCivicTexture()
+        changeTooltip(true)
+        changeTooltip(false)
+		Controls.AnPoTechButton:RegisterCallback(Mouse.eLClick, onClickTech);
+        Controls.AnPoCivicButton:RegisterCallback(Mouse.eLClick, onClickCivic);
+    end
 end
 
-function checkTechNCiciv(...)
+
+function AnPo_CheckTechNCiciv(...)
     local args = {...};
 
 	if args[1] > 0 then
 		return;
 	end
-    local isTechChangable = checkTech()
-    local isCivicChangable = checkCivic()
+
+    if (techStop == true and civicStop == true) then
+        return;
+    end
+    
+    if ((not civilizationName) and (not techStop)) then
+        civilizationName = PlayerConfigurations[Game.GetLocalPlayer()]:GetCivilizationTypeName()
+        if (civilizationName == "CIVILIZATION_BABYLON_STK") then
+            techStop = true;
+        end
+    end
+
+    local isTechChangable = false;
+    local isCivicChangable = false;
+    if (techStop == false) then
+        isTechChangable = checkTech();
+    end
+    if (civicStop == false) then
+        isCivicChangable = checkCivic();
+    end
+
     if (isTechChangable == true and isCivicChangable == true) then
-        OnShowBothReminders()
+        OnShowBothReminders();
     elseif(isTechChangable == true) then
-        OnShowTechReminder()
+        OnShowTechReminder();
     elseif(isCivicChangable == true) then
-        OnShowCivicReminder()
+        OnShowCivicReminder();
     end
 end
 
 
 function Initialize()
-    print("====================================")
-	print("Civic&Tech Change Reminder: initialization")
-	print("====================================")
-	Events.PlayerTurnActivated.Add(checkTechNCiciv)
-    Events.LoadGameViewStateDone.Add(OnEnterGame)
+    print("====================================");
+	print("Civic&Tech Change Reminder: initialization");
+	print("====================================");
+
+    Events.PlayerTurnActivated.Add(AnPo_CheckTechNCiciv);
+    Events.LoadGameViewStateDone.Add(OnEnterGame);
 end
 
-Initialize()
+Initialize();

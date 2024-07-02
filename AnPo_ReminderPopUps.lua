@@ -1,32 +1,32 @@
 include( "InstanceManager" );
 include( "AnPo_User_Settings" );
 
-local TECH_ACTIVE_KEY = "AnPo_TECH_ACTIVE_STATUS"
-local CIVIC_ACTIVE_KEY = "AnPo_CIVIC_ACTIVE_STATUS"
+local TECH_ACTIVE_KEY = "AnPo_TECH_ACTIVE_STATUS";
+local CIVIC_ACTIVE_KEY = "AnPo_CIVIC_ACTIVE_STATUS";
 
-local IsButtonAdded = false
+local IsButtonAdded = false;
 
-local techStop = nil;
-local techRemind = true
-local previousTech = nil
+local techIsActive = nil;
+local techRemind = true;
+local previousTech = nil;
 
-local civicStop = nil;
-local civicRemind = true
-local previousCivic = nil
+local civicIsActive = nil;
+local civicRemind = true;
+local previousCivic = nil;
 
-local currentTurn = -1
-local cachedTurn = -1
-local cachedExtraTechBoost = 0
-local cachedExtraCivicBoost = 0
+local currentTurn = -1;
+local cachedTurn = -1;
+local cachedExtraTechBoost = 0;
+local cachedExtraCivicBoost = 0;
 
-local techRemindTitle       :string = Locale.Lookup("LOC_ANPO_TECH_TITLE")
-local techRemindDesc        :string = Locale.Lookup("LOC_ANPO_TECH_DESC")
-local techRemindTree        :string = Locale.Lookup("LOC_ANPO_TECH_OPEN_TREE")
-local civicRemindTitle      :string = Locale.Lookup("LOC_ANPO_CIVIC_TITLE")
-local civicRemindDesc       :string = Locale.Lookup("LOC_ANPO_CIVIC_DESC")
-local civicRemindTree       :string = Locale.Lookup("LOC_ANPO_CIVIC_OPEN_TREE")
-local remindIgnore          :string = Locale.Lookup("LOC_ANPO_IGNORE")
-local remindMute            :string = Locale.Lookup("LOC_ANPO_MUTE")
+local techRemindTitle       :string = Locale.Lookup("LOC_ANPO_TECH_TITLE");
+local techRemindDesc        :string = Locale.Lookup("LOC_ANPO_TECH_DESC");
+local techRemindTree        :string = Locale.Lookup("LOC_ANPO_TECH_OPEN_TREE");
+local civicRemindTitle      :string = Locale.Lookup("LOC_ANPO_CIVIC_TITLE");
+local civicRemindDesc       :string = Locale.Lookup("LOC_ANPO_CIVIC_DESC");
+local civicRemindTree       :string = Locale.Lookup("LOC_ANPO_CIVIC_OPEN_TREE");
+local remindIgnore          :string = Locale.Lookup("LOC_ANPO_IGNORE");
+local remindMute            :string = Locale.Lookup("LOC_ANPO_MUTE");
 
 -- Check if the modifier's owner requirement set is met.
 local function IsOwnerRequirementSetMet(modifierObjId:number)
@@ -41,17 +41,17 @@ local function IsOwnerRequirementSetMet(modifierObjId:number)
 end
 
 local function queryExtraBoost(playerID, isTech)
-    
+
     if playerID ~= Game.GetLocalPlayer() then return; end
     if currentTurn == cachedTurn then
         if isTech then
-            return cachedExtraTechBoost
+            return cachedExtraTechBoost;
         else
-            return cachedExtraCivicBoost
+            return cachedExtraCivicBoost;
         end
     end
-    
-    cachedTurn = currentTurn
+
+    cachedTurn = currentTurn;
     local tech_ratio = 0;
     local civic_ratio = 0;
 
@@ -120,7 +120,7 @@ local function checkTech()
 	for row in GameInfo.Boosts() do
 		if (row.TechnologyType == GameInfo.Technologies[currentTech].TechnologyType) then
 			boostValueTech = row.Boost;
-			break
+			break;
 		end
 	end
     boostValueTech = boostValueTech + queryExtraBoost(Game.GetLocalPlayer(), true);
@@ -247,19 +247,19 @@ end
 
 
 local function changeTechTexture()
-    if (techStop) then
-        Controls.AnPoTechButton:SetTexture("AnPo_techGreyArtboard.dds")
+    if (techIsActive) then
+        Controls.AnPoTechButton:SetTexture("AnPo_techLongArtboard.dds");
     else
-        Controls.AnPoTechButton:SetTexture("AnPo_techLongArtboard.dds")
+        Controls.AnPoTechButton:SetTexture("AnPo_techGreyArtboard.dds");
     end
 
 end
 
 local function changeCivicTexture()
-    if (civicStop) then
-        Controls.AnPoCivicButton:SetTexture("AnPo_civicGreyArtboard.dds")
+    if (civicIsActive) then
+        Controls.AnPoCivicButton:SetTexture("AnPo_civicLongArtboard.dds");
     else
-        Controls.AnPoCivicButton:SetTexture("AnPo_civicLongArtboard.dds")
+        Controls.AnPoCivicButton:SetTexture("AnPo_civicGreyArtboard.dds");
     end
 
 end
@@ -268,17 +268,17 @@ local function changeTooltip(isCivic)
     local status: string;
 
     if (isCivic) then
-        if (not civicStop) then
-            status = "LOC_ANPO_ON"
+        if (civicIsActive) then
+            status = "LOC_ANPO_ON";
         else
-            status = "LOC_ANPO_OFF"
+            status = "LOC_ANPO_OFF";
         end
         Controls.AnPoCivicButton:SetToolTipString(Locale.Lookup("LOC_ANPO_CIVIC_BUTTON_TT", Locale.Lookup(status)));
     else
-        if (not techStop) then
-            status = "LOC_ANPO_ON"
+        if (techIsActive) then
+            status = "LOC_ANPO_ON";
         else
-            status = "LOC_ANPO_OFF"
+            status = "LOC_ANPO_OFF";
         end
         Controls.AnPoTechButton:SetToolTipString(Locale.Lookup("LOC_ANPO_TECH_BUTTON_TT", Locale.Lookup(status)));
     end
@@ -286,10 +286,10 @@ end
 
 local function onClickTech()
 
-    techStop = not techStop;
+    techIsActive = not techIsActive;
     local playerConfig = PlayerConfigurations[Game.GetLocalPlayer()];
     if playerConfig then
-        playerConfig:SetValue(TECH_ACTIVE_KEY, techStop);
+        playerConfig:SetValue(TECH_ACTIVE_KEY, techIsActive);
     end
 
     changeTooltip(false);
@@ -298,10 +298,10 @@ end
 
 local function onClickCivic()
 
-    civicStop = not civicStop;
+    civicIsActive = not civicIsActive;
     local playerConfig = PlayerConfigurations[Game.GetLocalPlayer()];
     if playerConfig then
-        playerConfig:SetValue(CIVIC_ACTIVE_KEY, civicStop);
+        playerConfig:SetValue(CIVIC_ACTIVE_KEY, civicIsActive);
     end
 
     changeTooltip(true);
@@ -311,30 +311,29 @@ end
 
 
 local function OnEnterGame()
-    local civilizationName = PlayerConfigurations[Game.GetLocalPlayer()]:GetCivilizationTypeName()
-
-    local playerConfig = PlayerConfigurations[Game.GetLocalPlayer()];
-    local techConfigs;
-    local civicConfigs;
-    if playerConfig then
-        techConfigs = playerConfig:GetValue(TECH_ACTIVE_KEY);
-        civicConfigs = playerConfig:GetValue(CIVIC_ACTIVE_KEY);
+    local civilizationName = PlayerConfigurations[Game.GetLocalPlayer()]:GetCivilizationTypeName();
+    local playerConfigs = PlayerConfigurations[Game.GetLocalPlayer()];
+    local techConfig;
+    local civicConfig;
+    if playerConfigs then
+        techConfig = playerConfigs:GetValue(TECH_ACTIVE_KEY);
+        civicConfig = playerConfigs:GetValue(CIVIC_ACTIVE_KEY);
     end
 
-    if techConfigs then
-        techStop = techConfigs;
+    if techConfig then
+        techIsActive = techConfig;
     else
         if (civilizationName:find("^CIVILIZATION_BABYLON") ~= nil) then
-            techStop = user_defaultBabylonTechStop;
+            techIsActive = AnPo_user_defaultBabylonTechReminder;
         else
-            techStop = user_techStop;
+            techIsActive = AnPo_user_techActiveByDefault;
         end
     end
 
-    if civicConfigs then
-        civicStop = civicConfigs;
+    if civicConfig then
+        civicIsActive = civicConfig;
     else
-        civicStop = user_civicStop;
+        civicIsActive = AnPo_user_civicActiveByDefault;
     end
 
     Controls.TechNCivicReminderCTN:SetHide(true);
@@ -355,10 +354,10 @@ local function OnEnterGame()
 			IsButtonAdded = true;
 		end
         
-        changeTechTexture()
-        changeCivicTexture()
-        changeTooltip(true)
-        changeTooltip(false)
+        changeTechTexture();
+        changeCivicTexture();
+        changeTooltip(true);
+        changeTooltip(false);
 		Controls.AnPoTechButton:RegisterCallback(Mouse.eLClick, onClickTech);
         Controls.AnPoCivicButton:RegisterCallback(Mouse.eLClick, onClickCivic);
     end
@@ -371,16 +370,16 @@ function AnPo_CheckTechNCiciv(...)
 		return;
 	end
 
-    if (techStop == true and civicStop == true) then
+    if (techIsActive == false and civicIsActive == false) then
         return;
     end
 
     local isTechChangable = false;
     local isCivicChangable = false;
-    if (techStop == false) then
+    if (techIsActive) then
         isTechChangable = checkTech();
     end
-    if (civicStop == false) then
+    if (civicIsActive) then
         isCivicChangable = checkCivic();
     end
 

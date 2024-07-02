@@ -312,7 +312,6 @@ end
 
 local function OnEnterGame()
     local civilizationName = PlayerConfigurations[Game.GetLocalPlayer()]:GetCivilizationTypeName()
-    
 
     local playerConfig = PlayerConfigurations[Game.GetLocalPlayer()];
     local techConfigs;
@@ -341,7 +340,6 @@ local function OnEnterGame()
     else
         civicStop = user_civicStop;
     end
-    
 
     Controls.TechNCivicReminderCTN:SetHide(true);
     Controls.TechNCivicReminderCTN:ChangeParent(ContextPtr:LookUpControl("/InGame/WorldViewControls"));
@@ -350,14 +348,14 @@ local function OnEnterGame()
     Controls.MuteButton:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
 
     if not IsButtonAdded then
-        local tPanRight = ContextPtr:LookUpControl("/InGame/TopPanel/RightContents");
-		if tPanRight ~= nil then
-			Controls.AnPoTechButton:ChangeParent(tPanRight);
-			tPanRight:AddChildAtIndex(Controls.AnPoTechButton, 3);
-            Controls.AnPoCivicButton:ChangeParent(tPanRight);
-			tPanRight:AddChildAtIndex(Controls.AnPoCivicButton, 3);
-			tPanRight:CalculateSize();
-			tPanRight:ReprocessAnchoring();
+        local topPanelControl = ContextPtr:LookUpControl("/InGame/TopPanel/" .. buttonPosition);
+		if topPanelControl ~= nil then
+			Controls.AnPoTechButton:ChangeParent(topPanelControl);
+			topPanelControl:AddChildAtIndex(Controls.AnPoTechButton, 3);
+            Controls.AnPoCivicButton:ChangeParent(topPanelControl);
+			topPanelControl:AddChildAtIndex(Controls.AnPoCivicButton, 3);
+			topPanelControl:CalculateSize();
+			topPanelControl:ReprocessAnchoring();
 			IsButtonAdded = true;
 		end
         
@@ -369,7 +367,6 @@ local function OnEnterGame()
         Controls.AnPoCivicButton:RegisterCallback(Mouse.eLClick, onClickCivic);
     end
 end
-
 
 function AnPo_CheckTechNCiciv(...)
     local args = {...};
@@ -399,7 +396,6 @@ function AnPo_CheckTechNCiciv(...)
         OnShowCivicReminder();
     end
 end
-
 
 function Initialize()
     print("====================================");

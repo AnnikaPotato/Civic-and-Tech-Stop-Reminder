@@ -20,7 +20,7 @@
 		</Box>
 	</Container>
 
-	<Container ID="AnPoButtonCont" Size="48,auto" Anchor="R,T" Offset="0,0" ConsumeMouse="1">
+	<Container ID="AnPoButtonCont" Size="49,auto" Anchor="C,C" Offset="1,1" ConsumeMouse="1">
         <Button ID="AnPoTechButton" Size="29,29" Anchor="C,C" Texture="AnPo_techLongArtboard.dds" ToolTip=" " ConsumeMouse="1"/>
 		<Button ID="AnPoCivicButton" Size="29,29" Anchor="C,C" Texture="AnPo_civicLongArtboard.dds" ToolTip=" " ConsumeMouse="1"/>
     </Container>

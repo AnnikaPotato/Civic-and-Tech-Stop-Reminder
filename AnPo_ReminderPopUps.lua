@@ -19,8 +19,6 @@ local cachedTurn = -1
 local cachedExtraTechBoost = 0
 local cachedExtraCivicBoost = 0
 
-local civilizationName = nil
-
 local techRemindTitle       :string = Locale.Lookup("LOC_ANPO_TECH_TITLE")
 local techRemindDesc        :string = Locale.Lookup("LOC_ANPO_TECH_DESC")
 local techRemindTree        :string = Locale.Lookup("LOC_ANPO_TECH_OPEN_TREE")
@@ -313,6 +311,9 @@ end
 
 
 local function OnEnterGame()
+    local civilizationName = PlayerConfigurations[Game.GetLocalPlayer()]:GetCivilizationTypeName()
+    
+
     local playerConfig = PlayerConfigurations[Game.GetLocalPlayer()];
     local techConfigs;
     local civicConfigs;
@@ -324,7 +325,15 @@ local function OnEnterGame()
     if techConfigs then
         techStop = techConfigs;
     else
-        techStop = user_techStop;
+        -- when you first start a babylon game, the tech reminder will be set to false,
+        -- but the mod will remember your settings for the current babylon game.
+        if (civilizationName:find("^CIVILIZATION_BABYLON") ~= nil) then
+            techStop = true;
+        else
+            techStop = user_techStop;
+        end
+
+        --techStop = user_techStop;
     end
 
     if civicConfigs then
@@ -371,13 +380,6 @@ function AnPo_CheckTechNCiciv(...)
 
     if (techStop == true and civicStop == true) then
         return;
-    end
-    
-    if ((not civilizationName) and (not techStop)) then
-        civilizationName = PlayerConfigurations[Game.GetLocalPlayer()]:GetCivilizationTypeName()
-        if (civilizationName == "CIVILIZATION_BABYLON_STK") then
-            techStop = true;
-        end
     end
 
     local isTechChangable = false;

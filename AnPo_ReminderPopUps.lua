@@ -324,15 +324,11 @@ local function OnEnterGame()
     if techConfigs then
         techStop = techConfigs;
     else
-        -- when you first start a babylon game, the tech reminder will be set to false,
-        -- but the mod will remember your settings for the current babylon game.
         if (civilizationName:find("^CIVILIZATION_BABYLON") ~= nil) then
-            techStop = true;
+            techStop = user_defaultBabylonTechStop;
         else
             techStop = user_techStop;
         end
-
-        --techStop = user_techStop;
     end
 
     if civicConfigs then
@@ -348,7 +344,7 @@ local function OnEnterGame()
     Controls.MuteButton:RegisterCallback( Mouse.eMouseEnter, function() UI.PlaySound("Main_Menu_Mouse_Over"); end);
 
     if not IsButtonAdded then
-        local topPanelControl = ContextPtr:LookUpControl("/InGame/TopPanel/" .. buttonPosition);
+        local topPanelControl = ContextPtr:LookUpControl("/InGame/TopPanel/" .. AnPo_ButtonPosition);
 		if topPanelControl ~= nil then
 			Controls.AnPoTechButton:ChangeParent(topPanelControl);
 			topPanelControl:AddChildAtIndex(Controls.AnPoTechButton, 3);

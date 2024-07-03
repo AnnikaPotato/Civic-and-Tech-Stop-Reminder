@@ -346,9 +346,9 @@ local function OnEnterGame()
         local topPanelControl = ContextPtr:LookUpControl("/InGame/TopPanel/" .. AnPo_ButtonPosition);
 		if topPanelControl ~= nil then
 			Controls.AnPoTechButton:ChangeParent(topPanelControl);
-			topPanelControl:AddChildAtIndex(Controls.AnPoTechButton, 3);
+			topPanelControl:AddChildAtIndex(Controls.AnPoTechButton, AnPo_ChildIndex);
             Controls.AnPoCivicButton:ChangeParent(topPanelControl);
-			topPanelControl:AddChildAtIndex(Controls.AnPoCivicButton, 3);
+			topPanelControl:AddChildAtIndex(Controls.AnPoCivicButton, AnPo_ChildIndex);
 			topPanelControl:CalculateSize();
 			topPanelControl:ReprocessAnchoring();
 			IsButtonAdded = true;

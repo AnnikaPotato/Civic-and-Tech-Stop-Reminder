@@ -38,6 +38,7 @@ end
 local function queryExtraBoost(playerID, isTech)
     local tech_ratio = 0;
     local civic_ratio = 0;
+    if tostring(playerID) ~= tostring(Game.GetLocalPlayer()) then return; end
 
     for _, modifierObjID in ipairs(GameEffects.GetModifiers()) do
         local isActive = GameEffects.GetModifierActive(modifierObjID);
@@ -109,7 +110,6 @@ local function checkTech()
 	end
     extraBoost = queryExtraBoost(Game.GetLocalPlayer(), true);
     boostValueTech = boostValueTech + extraBoost;
-    print(GameInfo.Technologies[currentTech].TechnologyType, boostValueTech)
 	if ((progress + math.floor(math.max(cost * boostValueTech / 100 - 0.5, 0))) < cost) then
 		return false;
 	end
@@ -153,7 +153,6 @@ local function checkCivic()
 		end
 	end
     boostValueCivic = boostValueCivic + queryExtraBoost(Game.GetLocalPlayer(), false);
-    print(GameInfo.Civics[currentCivic].CivicType, boostValueCivic)
 	if ((progress + math.floor(math.max(cost * boostValueCivic / 100. - 0.5 , 0))) < cost) then
 		return false;
 	end

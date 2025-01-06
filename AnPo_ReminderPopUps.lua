@@ -14,11 +14,6 @@ local civicIsActive = nil;
 local civicRemind = true;
 local previousCivic = nil;
 
-local currentTurn = -1;
-local cachedTurn = -1;
-local cachedExtraTechBoost = 0;
-local cachedExtraCivicBoost = 0;
-
 local techRemindTitle       :string = Locale.Lookup("LOC_ANPO_TECH_TITLE");
 local techRemindDesc        :string = Locale.Lookup("LOC_ANPO_TECH_DESC");
 local techRemindTree        :string = Locale.Lookup("LOC_ANPO_TECH_OPEN_TREE");
@@ -41,17 +36,6 @@ local function IsOwnerRequirementSetMet(modifierObjId:number)
 end
 
 local function queryExtraBoost(playerID, isTech)
-
-    if playerID ~= Game.GetLocalPlayer() then return; end
-    if currentTurn == cachedTurn then
-        if isTech then
-            return cachedExtraTechBoost;
-        else
-            return cachedExtraCivicBoost;
-        end
-    end
-
-    cachedTurn = currentTurn;
     local tech_ratio = 0;
     local civic_ratio = 0;
 
@@ -123,7 +107,9 @@ local function checkTech()
 			break;
 		end
 	end
-    boostValueTech = boostValueTech + queryExtraBoost(Game.GetLocalPlayer(), true);
+    extraBoost = queryExtraBoost(Game.GetLocalPlayer(), true);
+    boostValueTech = boostValueTech + extraBoost;
+    print(GameInfo.Technologies[currentTech].TechnologyType, boostValueTech)
 	if ((progress + math.floor(math.max(cost * boostValueTech / 100 - 0.5, 0))) < cost) then
 		return false;
 	end
@@ -167,6 +153,7 @@ local function checkCivic()
 		end
 	end
     boostValueCivic = boostValueCivic + queryExtraBoost(Game.GetLocalPlayer(), false);
+    print(GameInfo.Civics[currentCivic].CivicType, boostValueCivic)
 	if ((progress + math.floor(math.max(cost * boostValueCivic / 100. - 0.5 , 0))) < cost) then
 		return false;
 	end
